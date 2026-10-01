@@ -15,7 +15,7 @@ export default function PhotoTab() {
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
 
-  const [authed, setAuthed] = useState(false)
+  const [authed, setAuthed] = useState(true)
   const [pw, setPw] = useState('')
   const [pwError, setPwError] = useState('')
   const [uploading, setUploading] = useState(false)

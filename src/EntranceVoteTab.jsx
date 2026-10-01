@@ -5,7 +5,7 @@ import { pointsForRank, RANK_OPTIONS, rankLabel } from './points'
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '11111111'
 
 export default function EntranceVoteTab() {
-  const [authed, setAuthed] = useState(false)
+  const [authed, setAuthed] = useState(true)
   const [pw, setPw] = useState('')
   const [pwError, setPwError] = useState('')
   const [teacherName, setTeacherName] = useState('')

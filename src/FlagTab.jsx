@@ -13,7 +13,7 @@ export default function FlagTab({ allowUpload = true }) {
 
   const [grade, setGrade] = useState(1)
 
-  const [authed, setAuthed] = useState(false)
+  const [authed, setAuthed] = useState(true)
   const [pw, setPw] = useState('')
   const [pwError, setPwError] = useState('')
   const [classLabel, setClassLabel] = useState('')

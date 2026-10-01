@@ -5,7 +5,7 @@ import { EVENT_RULES } from './eventRules'
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '11111111'
 
 export default function RosterTab() {
-  const [authed, setAuthed] = useState(false)
+  const [authed, setAuthed] = useState(true)
   const [pw, setPw] = useState('')
   const [error, setError] = useState('')
 

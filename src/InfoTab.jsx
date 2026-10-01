@@ -221,7 +221,7 @@ const DEFAULT_TEXT = {
 export default function InfoTab({ allowEdit = true }) {
   const [sub, setSub] = useState('notice')
 
-  const [authed, setAuthed] = useState(false)
+  const [authed, setAuthed] = useState(true)
   const [pw, setPw] = useState('')
   const [pwError, setPwError] = useState('')
 

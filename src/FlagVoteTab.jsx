@@ -12,7 +12,7 @@ function parseLabel(fileName) {
 }
 
 export default function FlagVoteTab() {
-  const [authed, setAuthed] = useState(false)
+  const [authed, setAuthed] = useState(true)
   const [pw, setPw] = useState('')
   const [pwError, setPwError] = useState('')
   const [teacherName, setTeacherName] = useState('')
