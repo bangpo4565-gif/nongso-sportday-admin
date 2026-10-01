@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from './supabaseClient'
-import { parseName, parseGrade } from './classLabel'
+import { parseName, parseGrade, parseClassNo } from './classLabel'
 import { toSafeKey } from './safeKey'
 
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '11111111'
@@ -16,7 +16,7 @@ export default function FlagTab({ allowUpload = true }) {
 
   const [grade, setGrade] = useState(1)
 
-  const [authed, setAuthed] = useState(true)
+  const [authed, setAuthed] = useState(false)
   const [pw, setPw] = useState('')
   const [pwError, setPwError] = useState('')
   const [uploadGrade, setUploadGrade] = useState(1)
@@ -46,6 +46,7 @@ export default function FlagTab({ allowUpload = true }) {
           url: supabase.storage.from(BUCKET).getPublicUrl(f.name).data.publicUrl,
           ...parsed,
           grade: parseGrade(parsed.label),
+          classNo: parseClassNo(parsed.label),
         }
       })
       setPhotos(withUrls)
@@ -57,7 +58,13 @@ export default function FlagTab({ allowUpload = true }) {
     loadPhotos()
   }, [])
 
-  const gradePhotos = useMemo(() => photos.filter((p) => p.grade === grade), [photos, grade])
+  const gradePhotos = useMemo(
+    () =>
+      photos
+        .filter((p) => p.grade === grade)
+        .sort((a, b) => (a.classNo ?? 999) - (b.classNo ?? 999)),
+    [photos, grade]
+  )
   const unclassified = useMemo(() => photos.filter((p) => p.grade === null), [photos])
 
   function submitPassword(e) {
