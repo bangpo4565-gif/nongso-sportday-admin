@@ -5,6 +5,7 @@ import PhotoTab from './PhotoTab'
 import FlagVoteTab from './FlagVoteTab'
 import EntranceVoteTab from './EntranceVoteTab'
 import InfoTab from './InfoTab'
+import FlagTab from './FlagTab'
 import './App.css'
 
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '11111111'
@@ -14,6 +15,7 @@ const TABS = [
   { key: 'roster', label: '참가신청/학생배정' },
   { key: 'info', label: '공지사항/안내 편집' },
   { key: 'photos', label: '활동 사진' },
+  { key: 'flags', label: '학급 깃발 올리기' },
   { key: 'flagvote', label: '깃발 투표 및 순위' },
   { key: 'entrancevote', label: '입장식 투표 및 순위' },
 ]
@@ -87,6 +89,7 @@ function App() {
       {tab === 'roster' && <RosterTab />}
       {tab === 'info' && <InfoTab allowEdit={true} />}
       {tab === 'photos' && <PhotoTab />}
+      {tab === 'flags' && <FlagTab allowUpload={true} />}
       {tab === 'flagvote' && <FlagVoteTab />}
       {tab === 'entrancevote' && <EntranceVoteTab />}
     </div>
