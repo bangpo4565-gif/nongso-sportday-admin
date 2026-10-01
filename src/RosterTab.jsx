@@ -109,6 +109,26 @@ export default function RosterTab() {
     setChecked((prev) => ({ ...prev, [studentId]: !prev[studentId] }))
   }
 
+  function selectAllInClass() {
+    setChecked((prev) => {
+      const next = { ...prev }
+      classStudents.forEach((s) => {
+        next[s.id] = true
+      })
+      return next
+    })
+  }
+
+  function deselectAllInClass() {
+    setChecked((prev) => {
+      const next = { ...prev }
+      classStudents.forEach((s) => {
+        delete next[s.id]
+      })
+      return next
+    })
+  }
+
   function cancelSelection() {
     setChecked({})
     setMessage('')
@@ -256,7 +276,17 @@ export default function RosterTab() {
       </section>
 
       <section className="panel">
-        <h2>학생 목록</h2>
+        <div className="roster-actions" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2 style={{ margin: 0 }}>학생 목록</h2>
+          <div className="roster-actions" style={{ marginBottom: 0 }}>
+            <button className="cancel-btn" onClick={selectAllInClass} type="button">
+              모두 선택
+            </button>
+            <button className="cancel-btn" onClick={deselectAllInClass} type="button">
+              모두 해제
+            </button>
+          </div>
+        </div>
         <div className="student-list">
           {classStudents.map((s) => {
             const assignedEvents = assignmentsByStudent[s.id]
