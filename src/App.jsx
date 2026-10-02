@@ -6,6 +6,8 @@ import FlagVoteTab from './FlagVoteTab'
 import EntranceVoteTab from './EntranceVoteTab'
 import InfoTab from './InfoTab'
 import FlagTab from './FlagTab'
+import VideoTab from './VideoTab'
+import SongTab from './SongTab'
 import './App.css'
 
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '11111111'
@@ -18,6 +20,8 @@ const TABS = [
   { key: 'flags', label: '학급 깃발 올리기' },
   { key: 'flagvote', label: '깃발 투표 및 순위' },
   { key: 'entrancevote', label: '입장식 투표 및 순위' },
+  { key: 'videos', label: '종목 영상 관리' },
+  { key: 'songs', label: '노래 신청 관리' },
 ]
 
 function App() {
@@ -92,6 +96,8 @@ function App() {
       {tab === 'flags' && <FlagTab allowUpload={true} />}
       {tab === 'flagvote' && <FlagVoteTab />}
       {tab === 'entrancevote' && <EntranceVoteTab />}
+      {tab === 'videos' && <VideoTab allowManage={true} />}
+      {tab === 'songs' && <SongTab allowManage={true} />}
     </div>
   )
 }
