@@ -8,12 +8,14 @@ import InfoTab from './InfoTab'
 import FlagTab from './FlagTab'
 import VideoTab from './VideoTab'
 import SongTab from './SongTab'
+import JudgeTab from './JudgeTab'
 import './App.css'
 
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '11111111'
 
 const TABS = [
   { key: 'admin', label: '점수 입력' },
+  { key: 'judges', label: '심판 및 담당자' },
   { key: 'roster', label: '참가신청/학생배정' },
   { key: 'info', label: '공지사항/안내 편집' },
   { key: 'photos', label: '활동 사진' },
@@ -90,6 +92,7 @@ function App() {
       </header>
 
       {tab === 'admin' && <AdminTab />}
+      {tab === 'judges' && <JudgeTab />}
       {tab === 'roster' && <RosterTab />}
       {tab === 'info' && <InfoTab allowEdit={true} />}
       {tab === 'photos' && <PhotoTab />}
