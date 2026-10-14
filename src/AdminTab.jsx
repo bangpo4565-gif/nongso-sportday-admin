@@ -17,6 +17,9 @@ export default function AdminTab() {
   const [ranks, setRanks] = useState({}) // teamId -> rank
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
+  const [participantsDraft, setParticipantsDraft] = useState('')
+  const [savingParticipants, setSavingParticipants] = useState(false)
+  const [participantsMessage, setParticipantsMessage] = useState('')
 
   useEffect(() => {
     if (!authed) return
@@ -50,6 +53,35 @@ export default function AdminTab() {
     }
     loadExisting()
   }, [eventId])
+
+  const selectedEvent = events.find((ev) => ev.id === eventId)
+
+  // 종목을 바꾸면 그 종목의 인원 문구를 입력칸에 불러와요.
+  useEffect(() => {
+    setParticipantsDraft(selectedEvent ? selectedEvent.participants || '' : '')
+    setParticipantsMessage('')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventId, events.length])
+
+  async function saveParticipants() {
+    setSavingParticipants(true)
+    setParticipantsMessage('')
+    const value = participantsDraft.trim()
+    const { data, error: updateError } = await supabase
+      .from('events')
+      .update({ participants: value || null })
+      .eq('id', eventId)
+      .select()
+    setSavingParticipants(false)
+    if (updateError) {
+      setParticipantsMessage('저장 중 오류가 났어요: ' + updateError.message)
+    } else if (!data || data.length === 0) {
+      setParticipantsMessage('저장되지 않았어요. supabase-events-edit.sql을 Supabase에서 한 번 실행해야 해요.')
+    } else {
+      setEvents((prev) => prev.map((ev) => (ev.id === eventId ? { ...ev, participants: value || null } : ev)))
+      setParticipantsMessage('인원 수정 완료!')
+    }
+  }
 
   function submitPassword(e) {
     e.preventDefault()
@@ -184,6 +216,28 @@ export default function AdminTab() {
           {saving ? '저장 중...' : '저장하기'}
         </button>
         {message && <p className="save-message">{message}</p>}
+      </section>
+
+      <section className="panel">
+        <h2>종목 인원 수정</h2>
+        <p className="status-text" style={{ marginBottom: 12 }}>
+          위에서 선택한 종목({selectedEvent ? selectedEvent.name : '-'})의 참가 인원 문구를 고칠 수 있어요.
+        </p>
+        <input
+          type="text"
+          className="search-input"
+          placeholder="예) 12명 (남 6 · 여 6)"
+          value={participantsDraft}
+          onChange={(e) => setParticipantsDraft(e.target.value)}
+        />
+        <button
+          className="save-btn"
+          onClick={saveParticipants}
+          disabled={savingParticipants || participantsDraft.trim() === (selectedEvent?.participants || '')}
+        >
+          {savingParticipants ? '저장 중...' : '인원 저장'}
+        </button>
+        {participantsMessage && <p className="save-message">{participantsMessage}</p>}
       </section>
     </div>
   )
