@@ -4,6 +4,24 @@ import { EVENT_RULES } from './eventRules'
 
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '11111111'
 
+// Supabase는 한 번에 최대 1000줄까지만 돌려줘서, 배정이 1000건을 넘으면 일부가 화면에서 빠져요.
+// 그래서 1000줄씩 나눠서 전부 가져와요.
+async function fetchAllAssignments() {
+  const pageSize = 1000
+  let all = []
+  for (let from = 0; ; from += pageSize) {
+    const { data, error } = await supabase
+      .from('event_assignments')
+      .select('*')
+      .order('id')
+      .range(from, from + pageSize - 1)
+    if (error) return { data: all, error }
+    all = all.concat(data || [])
+    if (!data || data.length < pageSize) break
+  }
+  return { data: all, error: null }
+}
+
 export default function RosterTab() {
   const [authed, setAuthed] = useState(true)
   const [pw, setPw] = useState('')
@@ -24,7 +42,7 @@ export default function RosterTab() {
     const [studentRes, eventRes, assignRes] = await Promise.all([
       supabase.from('students').select('*').order('grade').order('class_no').order('number'),
       supabase.from('events').select('*').order('sort_order'),
-      supabase.from('event_assignments').select('*'),
+      fetchAllAssignments(),
     ])
     if (studentRes.error) {
       setLoadError('학생 명렬을 불러오지 못했어요. supabase-students.sql을 아직 실행하지 않았을 수 있어요.')
@@ -158,7 +176,9 @@ export default function RosterTab() {
 
     let opError = null
     if (rows.length > 0) {
-      const { error } = await supabase.from('event_assignments').insert(rows)
+      const { error } = await supabase
+        .from('event_assignments')
+        .upsert(rows, { onConflict: 'event_id,student_id', ignoreDuplicates: true })
       opError = error
     }
 
@@ -168,7 +188,7 @@ export default function RosterTab() {
     } else {
       setChecked({})
       setMessage(`${studentIds.length}명 배정 저장 완료!`)
-      const { data } = await supabase.from('event_assignments').select('*')
+      const { data } = await fetchAllAssignments()
       setAssignments(data || [])
     }
   }
@@ -180,7 +200,7 @@ export default function RosterTab() {
     if (error) {
       setMessage('삭제 중 오류가 났어요: ' + error.message)
     } else {
-      const { data } = await supabase.from('event_assignments').select('*')
+      const { data } = await fetchAllAssignments()
       setAssignments(data || [])
     }
   }
